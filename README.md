@@ -171,3 +171,13 @@ gci -include TestResults,coverage -recurse | remove-item -force -recurse
       - MOTE: Container desktop app installed.
         - Install WSL. (Inclusing LINUX distribution.)
         - INstall a container desktop app. Docker. Rancher. Podman.
+  - Test the API first:
+    - Arrange. Act. Assert. Use mocking libraries. 
+      - And then use [Theory] (xUnit concept) to avoid repetition.
+      - Ongoing focus on *readibility.*
+      - Limitations on unit tests.
+  - NSubstitute: Provides mocks for repositories and databases.
+    - Create an instance of the thing that you are going to mock, and then provide an expected behavior.
+  - NOTE: `async Task` within unit test method to respect ValidateAsync() method.
+  - Use Visual Studio's built-in test runner.
+  - Handy trick? Inject an ITestOutputHelper into the tests. It's a part of xUnit abstractions.

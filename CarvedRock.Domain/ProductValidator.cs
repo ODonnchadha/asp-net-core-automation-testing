@@ -3,11 +3,12 @@ using CarvedRock.Data;
 using FluentValidation;
 
 namespace CarvedRock.Domain;
+
 public class NewProductValidator : AbstractValidator<NewProductModel>
 {
-    private readonly ICarvedRockRepository _repo;
-
+    private readonly ICarvedRockRepository repository;
     internal record PriceRange(double Min, double Max);
+
     internal Dictionary<string, PriceRange> _priceRanges = new()
     {
         { "boots", new PriceRange(50, 300) },
@@ -15,9 +16,9 @@ public class NewProductValidator : AbstractValidator<NewProductModel>
         { "equip", new PriceRange(20, 150) }
     };
 
-    public NewProductValidator(ICarvedRockRepository repo)
+    public NewProductValidator(ICarvedRockRepository repository)
     {
-        _repo = repo;
+        this.repository = repository;
 
         RuleFor(p => p.Name)
             .NotEmpty().WithMessage("{PropertyName} is required.")
@@ -51,8 +52,6 @@ public class NewProductValidator : AbstractValidator<NewProductModel>
         return priceToValidate >= range.Min && priceToValidate <= range.Max;
     }
 
-    private async Task<bool> NameIsUnique(string name, CancellationToken token)
-    {
-        return await _repo.IsProductNameUniqueAsync(name);
-    }
+    private async Task<bool> NameIsUnique(
+        string name, CancellationToken token) => await repository.IsProductNameUniqueAsync(name);
 }

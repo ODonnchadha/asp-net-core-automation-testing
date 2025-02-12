@@ -46,7 +46,7 @@ public class ProductValidatorTests(ITestOutputHelper outputHelper)
         Assert.True(result.IsValid);
     }
 
-    [Theory]
+    [Theory()]
     [InlineData("", "Name is required.")]
     [InlineData(" ", "Name is required.")]
     [InlineData("duplicate", "A product with the same name already exists.")]
@@ -62,11 +62,11 @@ public class ProductValidatorTests(ITestOutputHelper outputHelper)
             Price = 100,
             ImgUrl = "http://www.example.com/image.jpg"
         };
-        var repo = Substitute.For<ICarvedRockRepository>();
-        repo.IsProductNameUniqueAsync(Arg.Any<string>()).Returns(true);
-        repo.IsProductNameUniqueAsync("duplicate").Returns(false);
+        var repository = Substitute.For<ICarvedRockRepository>();
+        repository.IsProductNameUniqueAsync(Arg.Any<string>()).Returns(true);
+        repository.IsProductNameUniqueAsync("duplicate").Returns(false);
 
-        var validator = new NewProductValidator(repo);
+        var validator = new NewProductValidator(repository);
 
         //act ------------------------
         var result = await validator.ValidateAsync(newProduct);
