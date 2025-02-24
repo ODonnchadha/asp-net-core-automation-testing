@@ -12,6 +12,16 @@ public static class HttpClientExtensions
     private static readonly JsonSerializerOptions _jsonDeserializeOptions = 
         new() { PropertyNameCaseInsensitive = true };
 
+    /// <summary>
+    /// Generic method. Url, expected HTTP status code, and an ITestOutputHelper.
+    /// Perform a GET against the Url and call the DeserializeAndCheckResponse method.
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    /// <param name="client"></param>
+    /// <param name="url"></param>
+    /// <param name="expectedStatus"></param>
+    /// <param name="output"></param>
+    /// <returns></returns>
     public static async Task<T> GetJsonResultAsync<T>(this HttpClient client, string url,
         HttpStatusCode expectedStatus, ITestOutputHelper output)
     {
@@ -26,6 +36,15 @@ public static class HttpClientExtensions
         return await DeserializeAndCheckResponse<T>(response, expectedStatus, output);
     }
 
+    /// <summary>
+    /// First, did we receive the correct response code? And then read the string response. 
+    /// And attampt to deserialize. Is it not null? Or did an error occur?
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    /// <param name="response"></param>
+    /// <param name="expectedStatus"></param>
+    /// <param name="output"></param>
+    /// <returns></returns>
     private static async Task<T> DeserializeAndCheckResponse<T>(HttpResponseMessage response,
         HttpStatusCode expectedStatus, ITestOutputHelper output)
     {
@@ -46,6 +65,11 @@ public static class HttpClientExtensions
         }
     }
 
+    /// <summary>
+    /// Attempt to parse the string content as JSON. If not, simply write as string.
+    /// </summary>
+    /// <param name="stringContent"></param>
+    /// <param name="output"></param>
     private static void WriteOutput(string stringContent, ITestOutputHelper output)
     {
         string? outputText;

@@ -1,9 +1,4 @@
-## Automation Testing Strategies with ASP.NET Core
-
-
-# Automated Testing Strategies for ASP.NET Core
-
-## Getting Started
+#### Getting Started
 
 You should set both the `Api` and the `WebApp` projects as startup projects. In Visual
 Studio this can be done by "Configure Startup Projects", then choosing "Multiple startup projects",
@@ -26,7 +21,7 @@ To see logs, you can navigate to [http://localhost:5341](http://localhost:5341).
 
 To see emails, you can navigate to [http://localhost:3000](http://localhost:3000).
 
-## Features
+#### Features
 
 This is a simple e-commerce application that has a few features
 that we want to explore automated testing strategies for.
@@ -61,7 +56,7 @@ For the learner:
 - More complex "cart edit" functionality
 - Be able to apply a "promotion" on the Cart page
 
-## VS Code Setup
+#### VS Code Setup
 
 RUnning in VS Code is a totally legitimate use-case for this solution and
 repo.
@@ -73,7 +68,7 @@ extension should probably be installed (it includes some other extensions):
 
 Then run the API project and the UI project.
 
-## Data and EF Core Migrations
+#### Data and EF Core Migrations
 
 The `dotnet ef` tool is used to manage EF Core migrations.  The following command is used to create migrations (from the `CarvedRock.Data` folder).
 
@@ -95,7 +90,7 @@ To browse / query the data, you can use some handy extensions:
 - In Visual Studio, use the [SQLite and SQL Server Compact Toolbox](https://marketplace.visualstudio.com/items?itemName=ErikEJ.SQLServerCompactSQLiteToolbox) extension
 - In VS Code, use the [SQLite Viewer](https://marketplace.visualstudio.com/items?itemName=qwtel.sqlite-viewer) extension
 
-## Verifiying Emails
+#### Verifiying Emails
 
 The very simple email functionality is done using a template
 from [this GitHub repo](https://github.com/leemunroe/responsive-html-email-template)
@@ -119,7 +114,7 @@ GET http://localhost:3000/api/messages
 GET http://localhost:3000/api/messages/<message-guid>/html
 ```
 
-## Test Coverage 
+#### Test Coverage 
 
 To see test coverage for the inner loop tests you've written,
 you can use the default [**coverlet**](https://github.com/coverlet-coverage/coverlet) tool that is included with
@@ -148,7 +143,7 @@ following command:
 gci -include TestResults,coverage -recurse | remove-item -force -recurse
 ```
 
-
+## AUTOMATION TESTING STRATEGIES WITH ASP.NET CORE by Erik Dahl
 
 - OVERVIEW:
   - Great automated tests that can be run while developing an ASP.NET Core application enables quality, reliability, and even continuous delivery. This course will teach you how to create and execute such a set of tests using .NET technologies.
@@ -181,3 +176,36 @@ gci -include TestResults,coverage -recurse | remove-item -force -recurse
   - NOTE: `async Task` within unit test method to respect ValidateAsync() method.
   - Use Visual Studio's built-in test runner.
   - Handy trick? Inject an ITestOutputHelper into the tests. It's a part of xUnit abstractions.
+  - Copy/paste versus [Fact()] and [Theory()]. 
+    - Add [InlineData("", "")]. And update validations.
+  - Generating bogus/fake test data. Library: Bogus for .NET: C#, F#, and VB.NET. `Bogus`
+      ```csharp
+        private readonly Faker _faker = new();
+        _faker.Lorem.Letters(51);
+      ```
+  - Unit tests versus integration tests. Unit test can have some shortcomings.
+    - The more you mock, the less meaningful the tests become.
+    - Unit tests: Great for business logic, calculations, validations, more.
+  - Regarding our API:
+    - Most logic deals with response handling, database, and authentication/authorization.
+  - Integration tests can be performed locally as well. 
+    - Less mocking, but not none. And can check and validate API responses.
+  - DEMO: Create and run an integration test.
+    - Prerequisites:
+      - Test project needs to reference: Microsoft.AspNetCore.Mvc.Testing
+      - Test project should be a Web SDK project and not simply SDK.
+        ```javascript
+          <Project Sdk="Microsoft.NET.Sdk.Web">
+        ```
+        ```csharp
+          public partial class Program { } // Integration testing.
+
+          using Microsoft.AspNetCore.Mvc.Testing;
+          using Xunit.Abstractions;
+          public class ControllerTests(
+            WebApplicationFactory<Program> factory, ITestOutputHelper helper) 
+          : IClassFicture<WebApplicationFactory<Program>>
+        ```
+      - A *good* test ensures proper deserialization.
+      - Test and validate both response status code and response payload.
+      - Never trust a trust that you have not seen fail.
